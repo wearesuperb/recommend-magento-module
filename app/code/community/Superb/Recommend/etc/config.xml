@@ -1,0 +1,178 @@
+<?xml version="1.0"?>
+<!--
+   Superb_Recommend
+   
+   NOTICE OF LICENSE
+   
+   This source file is subject to the Open Software License (OSL 3.0), a
+   copy of which is available through the world-wide-web at this URL:
+   http://opensource.org/licenses/osl-3.0.php
+   
+   @category   Superb
+   @package    Superb_Recommend
+   @author     Superb <hello@wearesuperb.com>
+   @copyright  Copyright (c) 2015 Superb Media Limited
+   @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+-->
+<config>
+    <modules>
+        <Superb_Recommend>
+            <version>0.0.10</version>
+        </Superb_Recommend>
+    </modules>
+    <global>
+        <models>
+            <superbrecommend>
+                <class>Superb_Recommend_Model</class>
+            </superbrecommend>
+        </models>
+        <helpers>
+            <superbrecommend><class>Superb_Recommend_Helper</class></superbrecommend>
+        </helpers>
+        <blocks>
+            <superbrecommend><class>Superb_Recommend_Block</class></superbrecommend>
+        </blocks>
+        <events>
+            <adminhtml_init_system_config>
+                <observers>
+                    <superbrecommend>
+                        <class>superbrecommend/observer</class>
+                        <method>initSystemConfig</method>
+                    </superbrecommend>
+                </observers>
+            </adminhtml_init_system_config>
+            <admin_system_config_changed_section_superbrecommend>
+                <observers>
+                    <superbrecommend>
+                        <class>superbrecommend/observer</class>
+                        <method>saveSystemConfig</method>
+                    </superbrecommend>
+                </observers>
+            </admin_system_config_changed_section_superbrecommend>
+        </events>
+    </global>
+    <frontend>
+        <layout>
+            <updates>
+                <superbrecommend>
+                    <file>superbrecommend.xml</file>
+                </superbrecommend>
+            </updates>
+        </layout>
+        <events>
+            <customer_save_after>
+                <observers>
+                    <superbrecommend>
+                        <class>superbrecommend/observer</class>
+                        <method>customerRegisterAndUpdate</method>
+                    </superbrecommend>
+                </observers>
+            </customer_save_after>
+            <customer_login>
+                <observers>
+                    <superbrecommend>
+                        <class>superbrecommend/observer</class>
+                        <method>customerLogin</method>
+                    </superbrecommend>
+                </observers>
+            </customer_login>
+            <catalog_controller_product_view>
+                <observers>
+                    <superbrecommend>
+                        <class>superbrecommend/observer</class>
+                        <method>productView</method>
+                    </superbrecommend>
+                </observers>
+            </catalog_controller_product_view>
+            <catalog_controller_category_init_after>
+                <observers>
+                    <superbrecommend>
+                        <class>superbrecommend/observer</class>
+                        <method>categoryView</method>
+                    </superbrecommend>
+                </observers>
+            </catalog_controller_category_init_after>
+            <checkout_cart_save_after>
+                <observers>
+                    <superbrecommend>
+                        <class>superbrecommend/observer</class>
+                        <method>cartSave</method>
+                    </superbrecommend>
+                </observers>
+            </checkout_cart_save_after>
+            <wishlist_items_renewed>
+                <observers>
+                    <superbrecommend>
+                        <class>superbrecommend/observer</class>
+                        <method>wishlistUpdated</method>
+                    </superbrecommend>
+                </observers>
+            </wishlist_items_renewed>
+            <newsletter_subscriber_save_before>
+                <observers>
+                    <superbrecommend>
+                        <type>singleton</type>
+                        <class>superbrecommend/observer</class>
+                        <method>checkSubscription</method>
+                    </superbrecommend>
+                </observers>
+            </newsletter_subscriber_save_before>
+            <newsletter_subscriber_delete_after>
+                <observers>
+                    <superbrecommend>
+                        <type>singleton</type>
+                        <class>superbrecommend/observer</class>
+                        <method>deleteSubscription</method>
+                    </superbrecommend>
+                </observers>
+            </newsletter_subscriber_delete_after>
+            <sales_convert_quote_item_to_order_item>
+                <observers>
+                    <superbrecommend>
+                        <type>singleton</type>
+                        <class>superbrecommend/observer</class>
+                        <method>convertQuoteItemToOrderItem</method>
+                    </superbrecommend>
+                </observers>
+            </sales_convert_quote_item_to_order_item>
+        </events>
+    </frontend>
+    <default>
+        <superbrecommend>
+            <general_settings>
+                <server_url>http://tracking.recommend.pro/</server_url>
+                <server_secure_url>https://tracking.recommend.pro/</server_secure_url>
+                <api_url>https://api.recommend.pro/</api_url>
+                <advanced>0</advanced>
+            </general_settings>
+            <panels>
+                <media_thumb_source>small_image</media_thumb_source>
+                <media_thumb_width>300</media_thumb_width>
+            </panels>
+            <status_cron>
+                <enabled>1</enabled>
+                <frequency>every5minutes</frequency>
+            </status_cron>
+            <data_cron>
+                <enabled>1</enabled>
+                <frequency>daily</frequency>
+            </data_cron>
+        </superbrecommend>
+    </default>
+    <crontab>
+        <jobs>
+            <superbrecommend_update_products_data>
+                <schedule><cron_expr>1 5 * * *</cron_expr></schedule>
+                <run>
+                    <model>superbrecommend/observer::updateProductsData</model>
+                </run>
+            </superbrecommend_update_products_data>
+            <superbrecommend_update_products_status>
+                <schedule><cron_expr>*/5 * * * *</cron_expr></schedule>
+                <run>
+                    <model>superbrecommend/observer::updateProductsStatus</model>
+                </run>
+            </superbrecommend_update_products_status>
+        </jobs>
+    </crontab>
+</config>

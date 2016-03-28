@@ -1,0 +1,145 @@
+<?xml version="1.0"?>
+<!--
+   Superb_Recommend
+   
+   NOTICE OF LICENSE
+   
+   This source file is subject to the Open Software License (OSL 3.0), a
+   copy of which is available through the world-wide-web at this URL:
+   http://opensource.org/licenses/osl-3.0.php
+   
+   @category   Superb
+   @package    Superb_Recommend
+   @author     Superb <hello@wearesuperb.com>
+   @copyright  Copyright (c) 2015 Superb Media Limited
+   @license    http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+-->
+<layout>
+    <default>
+        <reference name="head">
+            <block type="superbrecommend/static_block" name="recommend_tracker_static" after="-" >
+                <block type="superbrecommend/block" name="recommend_tracker" after="-" />
+            </block>
+        </reference>
+        <reference name="before_body_end">
+            <block type="core/template" name="recommend_tracker_static_force" after="-" >
+                <action method="setTemplate"><template>recommend_tracker/force.phtml</template></action>
+            </block>
+        </reference>
+    </default>
+
+    <j2tajaxcheckout_index_index>
+        <block type="superbrecommend/static_block" name="recommend_tracker_static_cart" after="-" >
+            <block type="superbrecommend/cart_block" name="recommend_tracker_cart" after="-" />
+        </block>
+    </j2tajaxcheckout_index_index>
+
+    <j2tajaxcheckout_index_lastadded>
+        <block type="superbrecommend/static_block" name="recommend_tracker_static_cart" after="-" >
+            <block type="superbrecommend/cart_block" name="recommend_tracker_cart" after="-" />
+        </block>
+    </j2tajaxcheckout_index_lastadded>
+
+    <checkout_onepage_success translate="label">
+        <reference name="recommend_tracker">
+            <action method="setSuccessPage"></action>
+        </reference>
+    </checkout_onepage_success>
+
+    <checkout_onepage_index translate="label">
+        <reference name="recommend_tracker">
+            <action method="setCheckoutPage"></action>
+        </reference>
+    </checkout_onepage_index>
+
+    <cms_index_index>
+        <reference name="content">
+            <block type="superbrecommend/slot" name="superbrecommend-homepage-slot-1">
+                <action method="setSlotId"><slot_id>homepage-slot-1</slot_id></action>
+                <action method="setSlotPosition"><position>10</position></action>
+                <action method="setPageType"><page_type>Homepage</page_type></action>
+                <action method="setPageTypePosition"><page_type_position>10</page_type_position></action>
+                <action method="setDefaultPanelId"><panel_id>home-dont-forget-these</panel_id></action>
+            </block>
+            <block type="superbrecommend/slot" name="superbrecommend-homepage-slot-2">
+                <action method="setSlotId"><slot_id>homepage-slot-2</slot_id></action>
+                <action method="setSlotPosition"><position>20</position></action>
+                <action method="setPageType"><page_type>Homepage</page_type></action>
+                <action method="setPageTypePosition"><page_type_position>10</page_type_position></action>
+                <action method="setDefaultPanelId"><panel_id>home-most-popular</panel_id></action>
+            </block>
+        </reference>
+    </cms_index_index>
+
+    <catalog_category_default>
+        <reference name="footer.before">
+            <block type="core/template" name="superbrecommend-product-listing-page-container">
+                <action method="setTemplate"><template>recommend_tracker/colmain.phtml</template></action>
+                <block type="superbrecommend/slot" name="superbrecommend-product-listing-slot-1">
+                    <action method="setSlotId"><slot_id>product-listing-slot-1</slot_id></action>
+                    <action method="setSlotPosition"><position>10</position></action>
+                    <action method="setPageType"><page_type>Product listing</page_type></action>
+                    <action method="setPageTypePosition"><page_type_position>30</page_type_position></action>
+                    <action method="setDefaultPanelId"><panel_id>category-most-popular</panel_id></action>
+                </block>
+            </block>
+        </reference>
+    </catalog_category_default>
+
+    <catalog_category_layered>
+        <reference name="footer.before">
+            <block type="core/template" name="superbrecommend-product-listing-page-container">
+                <action method="setTemplate"><template>recommend_tracker/colmain.phtml</template></action>
+                <block type="superbrecommend/slot" name="superbrecommend-product-listing-slot-1">
+                    <action method="setSlotId"><slot_id>product-listing-slot-1</slot_id></action>
+                    <action method="setSlotPosition"><position>10</position></action>
+                    <action method="setPageType"><page_type>Product listing</page_type></action>
+                    <action method="setPageTypePosition"><page_type_position>30</page_type_position></action>
+                    <action method="setDefaultPanelId"><panel_id>category-most-popular</panel_id></action>
+                </block>
+            </block>
+        </reference>
+    </catalog_category_layered>
+
+    <catalog_product_view>
+        <reference name="footer.before">
+            <block type="core/template" name="superbrecommend-product-detail-page-container">
+                <action method="setTemplate"><template>recommend_tracker/colmain.phtml</template></action>
+                <block type="superbrecommend/slot" name="superbrecommend-product-detail-slot-1">
+                    <action method="setSlotId"><slot_id>product-detail-slot-1</slot_id></action>
+                    <action method="setSlotPosition"><position>10</position></action>
+                    <action method="setPageType"><page_type>Product detail</page_type></action>
+                    <action method="setPageTypePosition"><page_type_position>40</page_type_position></action>
+                    <action method="setDefaultPanelId"><panel_id>product-customers-also-viewed</panel_id></action>
+                </block>
+            </block>
+        </reference>
+    </catalog_product_view>
+
+    <checkout_cart_index>
+        <reference name="footer.before">
+            <block type="core/template" name="superbrecommend-shopping-bag-page-container">
+                <action method="setTemplate"><template>recommend_tracker/colmain.phtml</template></action>
+                <block type="superbrecommend/slot" name="superbrecommend-shopping-bag-slot-1">
+                    <action method="setSlotId"><slot_id>shopping-bag-slot-1</slot_id></action>
+                    <action method="setSlotPosition"><position>10</position></action>
+                    <action method="setPageType"><page_type>Shopping bag</page_type></action>
+                    <action method="setPageTypePosition"><page_type_position>50</page_type_position></action>
+                    <action method="setDefaultPanelId"><panel_id>shopping-bag-people-also-bought</panel_id></action>
+                </block>
+            </block>
+        </reference>
+    </checkout_cart_index>
+    <!-- 404 -->
+    <cms_index_noroute>
+        <reference name="content">
+            <block type="superbrecommend/slot" name="superbrecommend-error-404-slot-1">
+                <action method="setSlotId"><slot_id>error-404-slot-1</slot_id></action>
+                <action method="setSlotPosition"><position>10</position></action>
+                <action method="setPageType"><page_type>Error 404</page_type></action>
+                <action method="setPageTypePosition"><page_type_position>70</page_type_position></action>
+                <action method="setDefaultPanelId"><panel_id>error-404-why-not-try-these</panel_id></action>
+            </block>
+        </reference>
+    </cms_index_noroute>
+</layout>
