@@ -120,9 +120,9 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
     public function getApiJsUrl()
     {
         if (Mage::app()->getStore()->isCurrentlySecure())
-            return Mage::getStoreConfig(self::XML_PATH_TRACKING_URL_SECURE).'trackerv11.js';
+            return Mage::getStoreConfig(self::XML_PATH_TRACKING_URL_SECURE).'trackerv12.js';
         else
-            return Mage::getStoreConfig(self::XML_PATH_TRACKING_URL).'trackerv11.js';
+            return Mage::getStoreConfig(self::XML_PATH_TRACKING_URL).'trackerv12.js';
     }
 
     public function getCustomerRegistrationConfirmData($customer=null)
