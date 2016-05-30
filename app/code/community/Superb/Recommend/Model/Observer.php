@@ -289,6 +289,7 @@ class Superb_Recommend_Model_Observer
             }
             $eavConfig = Mage::getSingleton('eav/config');
             $collection = Mage::getResourceModel('catalog/product_collection')->setStore($store)->setStoreId($store->getStoreId());
+            $collection->addAttributeToSelect('sku');
             foreach($_attributes as $_attributeCode)
             {
                 $attribute = $eavConfig->getAttribute('catalog_product', $_attributeCode);
