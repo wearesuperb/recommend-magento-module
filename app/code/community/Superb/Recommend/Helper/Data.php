@@ -178,7 +178,6 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
             'title'             => $customer->getPrefix(),
             'firstname'         => $customer->getFirstname(),
             'lastname'          => $customer->getLastname(),
-            'email'             => $customer->getEmail(),
             'email_subscribed'  => $subscription->isSubscribed() ? 'yes' : 'no',
             'mobile'            => $customer->getPrimaryBillingAddress() && $customer->getPrimaryBillingAddress()->getId() ? $customer->getPrimaryBillingAddress()->getTelephone():'',
         );
