@@ -284,8 +284,8 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
         }
         else
         {
-            $_price = $_product->getPrice();
-            $_finalPrice = $_product->getFinalPrice();
+            $_price = Mage::helper('tax')->getPrice($_product, $_product->getPrice(), true);
+            $_finalPrice = Mage::helper('tax')->getPrice($_product, $_product->getFinalPrice(), true);
         }
         $imageUrl = (string)Mage::helper('catalog/image')->init($_product, $this->getThumbSource())->resize($this->getThumbWidth(), $this->getThumbHeight());
         $secureImageUrl = str_replace(Mage::getBaseUrl('media',false),Mage::getBaseUrl('media',true),$imageUrl);

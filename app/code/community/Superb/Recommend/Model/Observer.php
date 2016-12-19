@@ -321,6 +321,7 @@ class Superb_Recommend_Model_Observer
 
             $isEmpty = false;
             $offset = 0;
+            $taxHelper = Mage::helper('tax');
             while (!$isEmpty) {
                 $productCol = clone $collection;
                 $productCol->getSelect()->limit(self::LIMIT_STEP, $offset);
@@ -358,9 +359,9 @@ class Superb_Recommend_Model_Observer
                         else
                         {
                             if (!isset($finalPrice[$code]))
-                                $finalPrice[$code] = $store->getBaseCurrency()->convert($product->getFinalPrice(), $currency);
+                                $finalPrice[$code] = $store->getBaseCurrency()->convert($taxHelper->getPrice($product, $product->getFinalPrice(), true), $currency);
                             if (!isset($price[$code]))
-                                $price[$code] = $store->getBaseCurrency()->convert($product->getPrice(), $currency);
+                                $price[$code] = $store->getBaseCurrency()->convert($taxHelper->getPrice($product, $product->getPrice(), true), $currency);
                         }
                     }
 
