@@ -52,6 +52,15 @@
         </events>
     </global>
     <frontend>
+        <routers>
+            <superbrecommend>
+                <use>standard</use>
+                <args>
+                    <module>Superb_Recommend</module>
+                    <frontName>superb-recommend</frontName>
+                </args>
+            </superbrecommend>
+        </routers>
         <layout>
             <updates>
                 <superbrecommend>

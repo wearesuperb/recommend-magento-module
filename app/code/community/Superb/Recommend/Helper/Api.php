@@ -77,6 +77,11 @@ class Superb_Recommend_Helper_Api extends Mage_Core_Helper_Data
         return Mage::getStoreConfig(self::XML_PATH_API_URL,$storeId).'v1/'.urlencode(Mage::getStoreConfig(self::XML_PATH_TRACKING_ACCOUNT_ID,$storeId)).'/slots';
     }
 
+    protected function _getCartRebuildDataUrl($messageId, $storeId = null)
+    {
+        return Mage::getStoreConfig(self::XML_PATH_API_URL,$storeId).'v1/'.urlencode(Mage::getStoreConfig(self::XML_PATH_TRACKING_ACCOUNT_ID,$storeId)).'/emails/'.urlencode($messageId);
+    }
+
     protected function _getAccessToken($storeId = null)
     {
         if (!isset($this->_tokenData[$storeId]) || (is_array($this->_tokenData[$storeId]) && !isset($this->_tokenData[$storeId]['token'])) || (is_array($this->_tokenData[$storeId]) && isset($this->_tokenData[$storeId]['expires_date']) && (time()>$this->_tokenData[$storeId]['expires_date'])))
@@ -338,6 +343,28 @@ class Superb_Recommend_Helper_Api extends Mage_Core_Helper_Data
             {
                 Mage::getSingleton('adminhtml/session')->addError(Mage::helper('adminhtml')->__('API not connected. Check Account Id and API key.'));
                 return false;
+            }
+        } catch (Exception $e) {
+            Mage::log($e->getMessage()."\n".$e->getTraceAsString(),null,'recommend-api.log');
+        }
+    }
+
+    public function getCartRebuildData($messageId,$storeId = null)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->_getCartRebuildDataUrl($messageId,$storeId));
+        $headers = array();
+        $headers[] = 'X-Auth-Token: '.$this->_getAccessToken($storeId);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        try {
+            $responseBody = curl_exec($ch);
+            Mage::log($responseBody,null,'recommend-cart-rebuild-data.log');
+            $response = json_decode($responseBody,true);
+            if (isset($response['success']) && $response['success']==true && isset($response['cart_rebuild_data']) && is_string($response['cart_rebuild_data'])) {
+                return $response['cart_rebuild_data'];
             }
         } catch (Exception $e) {
             Mage::log($e->getMessage()."\n".$e->getTraceAsString(),null,'recommend-api.log');

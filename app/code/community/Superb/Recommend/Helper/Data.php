@@ -372,7 +372,8 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
             'type'          => 'cart-update',
             'grand-total'   => sprintf('%01.2f',$_cart->getQuote()->getGrandTotal()),
             'total-qty'     => (int)$_cart->getSummaryQty(),
-            'products'      => array()
+            'products'      => array(),
+            'rebuild'       => array('url'=>Mage::getModel('core/url')->getUrl('superbrecommend/cart/rebuild'),'data'=>array())
         );
         foreach($_items as $_item)
         {
@@ -440,7 +441,11 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
             $itemData['product-price']  = sprintf('%01.2f',Mage::helper('checkout')->getPriceInclTax($_item));
             $itemData['product-total-val']  = sprintf('%01.2f',Mage::helper('checkout')->getSubtotalInclTax($_item));
             $data['products'][] = $itemData;
+
+            $data['rebuild']['data'][] = $_item->getBuyRequest();
         }
+        $rebuildHelper = Mage::helper('superbrecommend/rebuild');
+        $data['rebuild']['data'] = $rebuildHelper->base64UrlEncode(serialize($data['rebuild']['data']));
         $data = array(
             'setEcommerceData',
             $data
