@@ -165,6 +165,7 @@ class Superb_Recommend_Helper_Api extends Mage_Core_Helper_Data
         } catch (Exception $e) {
             Mage::log($e->getMessage()."\n".$e->getTraceAsString(),null,'recommend-api.log');
         }
+        return [];
     }
 
     public function getSlotsPageTypesData($storeId = null)
@@ -189,6 +190,7 @@ class Superb_Recommend_Helper_Api extends Mage_Core_Helper_Data
         } catch (Exception $e) {
             Mage::log($e->getMessage()."\n".$e->getTraceAsString(),null,'recommend-api.log');
         }
+        return [];
     }
 
     public function getSlotsData($storeId = null)
@@ -213,6 +215,7 @@ class Superb_Recommend_Helper_Api extends Mage_Core_Helper_Data
         } catch (Exception $e) {
             Mage::log($e->getMessage()."\n".$e->getTraceAsString(),null,'recommend-api.log');
         }
+        return [];
     }
 
     public function updateSlots($slotsData,$storeId = null)
