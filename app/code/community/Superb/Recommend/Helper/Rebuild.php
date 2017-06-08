@@ -92,6 +92,15 @@ class Superb_Recommend_Helper_Rebuild extends Mage_Core_Helper_Data
                 }
             } catch (Exception $e) {
                 Mage::logException($e);
+                foreach($cart->getItems() as $itemId => $item) {
+                    if ($item->getHasError()) {
+                        if (is_null($item->getId())) {
+                            $cart->getQuote()->getItemsCollection()->removeItemByKey($itemId);
+                        } else {
+                            $cart->removeItem($item->getId());
+                        }
+                    }
+                }
             }
         }
         if ($cartUpdated) {
