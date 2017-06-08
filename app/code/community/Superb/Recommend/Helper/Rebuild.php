@@ -74,12 +74,12 @@ class Superb_Recommend_Helper_Rebuild extends Mage_Core_Helper_Data
                 $storeId = Mage::app()->getStore()->getId();
 
                 if ($product->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED) {
-                    return false;
+                    continue;
                 }
 
                 if (!$product->isVisibleInSiteVisibility()) {
                     if ($product->getStoreId() == $storeId) {
-                        return false;
+                        continue;
                     }
                 }
 
