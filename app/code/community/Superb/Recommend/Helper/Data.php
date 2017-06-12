@@ -541,7 +541,7 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
         $_qtyOrdered = 0;
         foreach($_items as $_item)
         {
-            if (!$_item->getHasChildren() && !$_item->getParentItem())
+            if ((!$_item->getHasChildren() && !$_item->getParentItem()) || $_item->getProductType() == "bundle")
             {
                 $_qtyOrdered += $_item->getQtyOrdered();
                 $itemData = array();
@@ -553,6 +553,9 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
             }
             elseif ($_item->getParentItem())
             {
+                if ($_item->getParentItem()->getProductType() == "bundle") {
+                    continue;
+                }
                 $_qtyOrdered += $_item->getQtyOrdered();
                 $itemData = array();
                 $itemData['sale-product-name'] = $this->normalizeName($_item->getName());
