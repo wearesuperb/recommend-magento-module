@@ -70,8 +70,8 @@ class Superb_Recommend_Helper_Rebuild extends Mage_Core_Helper_Data
         $cartUpdated = false;
         foreach($data as $buyRequest) {
             try {
-                $product = $this->getProduct($buyRequest);
                 $storeId = Mage::app()->getStore()->getId();
+                $product = $this->getProduct($buyRequest, $storeId);
 
                 if ($product->getStatus() != Mage_Catalog_Model_Product_Status::STATUS_ENABLED) {
                     continue;
