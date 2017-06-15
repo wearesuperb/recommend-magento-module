@@ -19,6 +19,8 @@ class Superb_Recommend_CartController extends Mage_Core_Controller_Front_Action
         }
         $cartUrl = Mage::helper('checkout/cart')->getCartUrl();
         $cartUrlDelimiter = (strpos($cartUrl,'?')!==false?'&':'?');
-        return $this->_redirectUrl($cartUrl.(strlen($messageId)?$cartUrlDelimiter.$rebuildHelper::RECOMMEND_TRACKING_MESSAGE_CODE.'='.$messageId:''));
+        $queryParams = $cartUrlDelimiter.http_build_query($this->getRequest()->getParams());
+
+        return $this->_redirectUrl($cartUrl.$queryParams);
     }
 }
