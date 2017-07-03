@@ -539,20 +539,32 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
             'sale-currency'     => $order->getBaseCurrencyCode()
         );
         $_qtyOrdered = 0;
-        foreach($_items as $_item)
-        {
-            if ((!$_item->getHasChildren() && !$_item->getParentItem()) || $_item->getProductType() == "bundle")
-            {
+
+        $bundle_product_prices = [];
+        foreach($_items as $_item) {
+            if ($_item->getParentItem() && $_item->getParentItem()->getProductType() == "bundle") {
+                if (($options = $_item->getParentItem()->getProductOptions())
+                    && isset($options['product_calculations'])
+                    && $options['product_calculations'] == Mage_Catalog_Model_Product_Type_Abstract::CALCULATE_CHILD
+                ) {
+                    $bundle_product_prices[$_item->getParentItem()->getProductId()][] = (float)$_item->getBasePriceInclTax() - (float)$_item->getBaseDiscountAmount();
+                }
+            }
+        }
+        foreach($_items as $_item) {
+            if ((!$_item->getHasChildren() && !$_item->getParentItem()) || $_item->getProductType() == "bundle") {
                 $_qtyOrdered += $_item->getQtyOrdered();
                 $itemData = array();
                 $itemData['sale-product-name'] = $this->normalizeName($_item->getName());
                 $itemData['sale-product-sku'] = $_item->getProductOptionByCode('recommend-product-view-sku');
                 $itemData['sale-product-qty']  = $_item->getQtyOrdered();
-                $itemData['sale-product-val']  = sprintf('%.2f', $_item->getBasePriceInclTax());
+                if (isset($bundle_product_prices[$_item->getProductId()]) && count($bundle_product_prices[$_item->getProductId()])) {
+                    $itemData['sale-product-val']  = sprintf('%.2f', array_sum($bundle_product_prices[$_item->getProductId()]));
+                } else {
+                    $itemData['sale-product-val']  = sprintf('%.2f', (float)$_item->getBasePriceInclTax() - (float)$_item->getBaseDiscountAmount());
+                }
                 $data['products'][] = $itemData;
-            }
-            elseif ($_item->getParentItem())
-            {
+            } elseif ($_item->getParentItem()) {
                 if ($_item->getParentItem()->getProductType() == "bundle") {
                     continue;
                 }
@@ -561,10 +573,11 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
                 $itemData['sale-product-name'] = $this->normalizeName($_item->getName());
                 $itemData['sale-product-sku'] = $_item->getParentItem()->getProductOptionByCode('recommend-product-view-sku');
                 $itemData['sale-product-qty']  = $_item->getParentItem()->getQtyOrdered();
-                $itemData['sale-product-val']  = sprintf('%.2f', $_item->getParentItem()->getBasePriceInclTax());
+                $itemData['sale-product-val']  = sprintf('%.2f', (float)$_item->getParentItem()->getBasePriceInclTax() - (float)$_item->getParentItem()->getBaseDiscountAmount());
                 $data['products'][] = $itemData;
             }
         }
+
         $data['sale-qty'] = $_qtyOrdered;
         $data = array(
             'setEcommerceData',
