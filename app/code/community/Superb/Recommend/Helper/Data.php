@@ -464,7 +464,6 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
         foreach($_items as $_item)
         {
             $itemData = array();
-            $itemData['product-name']  = $this->normalizeName($_item->getProduct()->getName());
             $buyRequest = $_item->getBuyRequest();
             if (is_object($buyRequest)) {
                 $config = $buyRequest->getSuperProductConfig();
@@ -475,15 +474,7 @@ class Superb_Recommend_Helper_Data extends Mage_Core_Helper_Data
                     $_item->setProduct($product);
                 }
             }
-
             $itemData['product-sku']  = $_item->getProduct()->getSku();
-            $itemData['product-image'] = (string)Mage::helper('catalog/image')->init($_item->getProduct(), $this->getThumbSource())->resize($this->getThumbWidth(), $this->getThumbHeight());
-            $productUrl = '';
-            $productUrl = $_item->getProduct()->getUrlModel()->getUrl($_item->getProduct());
-            $itemData['product-url']  = $productUrl;
-            $itemData['product-price']  = sprintf('%01.2f',$_item->getProduct()->getFinalPrice());
-            $date = Mage::app()->getLocale()->storeDate('', $_item->getAddedAt(), true);
-            $itemData['product-date-Added']  = $date->toString('dd.MM.YYYY');
             $data['products'][] = $itemData;
         }
         $data = array(
