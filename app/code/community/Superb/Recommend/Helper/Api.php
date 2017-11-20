@@ -82,6 +82,11 @@ class Superb_Recommend_Helper_Api extends Mage_Core_Helper_Data
         return Mage::getStoreConfig(self::XML_PATH_API_URL,$storeId).'v1/'.urlencode(Mage::getStoreConfig(self::XML_PATH_TRACKING_ACCOUNT_ID,$storeId)).'/emails/'.urlencode($messageId);
     }
 
+    protected function _getUploadOrderDataUrl($storeId = null)
+    {
+        return Mage::getStoreConfig(self::XML_PATH_API_URL,$storeId).'v1/'.urlencode(Mage::getStoreConfig(self::XML_PATH_TRACKING_ACCOUNT_ID,$storeId)).'/orders/uploadData';
+    }
+
     protected function _getAccessToken($storeId = null)
     {
         if (!isset($this->_tokenData[$storeId]) || (is_array($this->_tokenData[$storeId]) && !isset($this->_tokenData[$storeId]['token'])) || (is_array($this->_tokenData[$storeId]) && isset($this->_tokenData[$storeId]['expires_date']) && (time()>$this->_tokenData[$storeId]['expires_date'])))
@@ -376,5 +381,30 @@ class Superb_Recommend_Helper_Api extends Mage_Core_Helper_Data
 
     public function getShowOutOfStockProduct(){
         return (bool) Mage::getStoreConfig(self::XML_PATH_API_SHOW_OUT_OF_STOCK_PRODUCTS);
+    }
+
+    public function uploadOrderData($data) {
+        $ch = curl_init();
+        $data_string = json_encode(array('order_data' => $data));
+        curl_setopt($ch, CURLOPT_URL, $this->_getUploadOrderDataUrl($data['store_id']));
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        $headers = array();
+        $headers[] = 'X-Auth-Token: '.$this->_getAccessToken($data['store_id']);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        try {
+            $responseBody = curl_exec($ch);
+            Mage::log($responseBody,null,'recommend-upload-order-data.log');
+            $response = json_decode($responseBody,true);
+            if (isset($response['success']) && $response['success']==true)
+            {
+                return $response;
+            }
+        } catch (Exception $e) {
+            Mage::log($e->getMessage()."\n".$e->getTraceAsString(),null,'recommend-api.log');
+        }
     }
 }

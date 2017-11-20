@@ -463,6 +463,33 @@ class Superb_Recommend_Model_Observer
         }
     }
 
+    public function updateOrdersData(Mage_Cron_Model_Schedule $schedule)
+    {
+        $orderData = [];
+
+        try {
+            $apiHelper = Mage::helper('superbrecommend/api');
+            $ordersQueueCollection = Mage::getModel('superbrecommend/ordersQueue')->getCollection()->setOrder('id', 'ASC');
+            foreach ($ordersQueueCollection->getItems() as $order) {
+                $orderData = [];
+                $orderData['cid']       = $order->getData('cid');
+                $orderData['email']     = $order->getData('email');
+                $orderData['order_id']  = $order->getData('order_id');
+                $orderData['status']    = $order->getData('status');
+                $orderData['store_id']  = $order->getData('store_id');
+                $orderData['segment']   = $order->getData('segment');
+                $response = $apiHelper->uploadOrderData($orderData);
+                if (isset($response['success']) && $response['success']==true) {
+                    $order->delete();
+                } else {
+                    Mage::log('Unable to send order ('.$order->getData('order_id').') via API.',null,'recommend-upload-order-data.log');
+                }
+            }
+        } catch (Exception $e) {
+            Mage::logException($e);
+        }
+    }
+
     protected function _sortData($a, $b)
     {
         if (isset($a['position']))
@@ -545,6 +572,26 @@ class Superb_Recommend_Model_Observer
         
         Mage::helper('superbrecommend/api')->updateAccount($storeId);
         
+        return $this;
+    }
+
+    public function orderUpdate(Varien_Event_Observer $observer)
+    {
+        $order = $observer->getEvent()->getOrder();
+
+        $orderQueue = Mage::getModel('superbrecommend/ordersQueue');
+
+        if ($orderQueue instanceof Mage_Core_Model_Abstract && !is_null($order->getStatus())) {
+            $orderQueue->setData([
+                'email'     => $order->getCustomerEmail(),
+                'order_id'  => $order->getIncrementId(),
+                'cid'       => $order->getCustomerId(),
+                'status'    => $order->getStatus(),
+                'store_id'  => $order->getStoreId()
+            ]);
+            $orderQueue->save();
+        }
+
         return $this;
     }
 }

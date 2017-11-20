@@ -17,14 +17,30 @@
 <config>
     <modules>
         <Superb_Recommend>
-            <version>0.0.10</version>
+            <version>0.0.20</version>
         </Superb_Recommend>
     </modules>
     <global>
+        <resources>
+            <superbrecommend_setup>
+                <setup>
+                    <module>Superb_Recommend</module>
+                </setup>
+            </superbrecommend_setup>
+        </resources>
         <models>
             <superbrecommend>
                 <class>Superb_Recommend_Model</class>
+                <resourceModel>superbrecommend_resource</resourceModel>
             </superbrecommend>
+            <superbrecommend_resource>
+                <class>Superb_Recommend_Model_Resource</class>
+                <entities>
+                    <ordersQueue>
+                        <table>superb_recommend_orders_queue</table>
+                    </ordersQueue>
+                </entities>
+            </superbrecommend_resource>
         </models>
         <helpers>
             <superbrecommend><class>Superb_Recommend_Helper</class></superbrecommend>
@@ -49,6 +65,14 @@
                     </superbrecommend>
                 </observers>
             </admin_system_config_changed_section_superbrecommend>
+            <sales_order_save_after>
+                <observers>
+                    <superbrecommend>
+                        <class>superbrecommend/observer</class>
+                        <method>orderUpdate</method>
+                    </superbrecommend>
+                </observers>
+            </sales_order_save_after>
         </events>
     </global>
     <frontend>
@@ -182,6 +206,12 @@
                     <model>superbrecommend/observer::updateProductsStatus</model>
                 </run>
             </superbrecommend_update_products_status>
+            <superbrecommend_upload_orders_status>
+                <schedule><cron_expr>*/1 * * * *</cron_expr></schedule>
+                <run>
+                    <model>superbrecommend/observer::updateOrdersData</model>
+                </run>
+            </superbrecommend_upload_orders_status>
         </jobs>
     </crontab>
 </config>
