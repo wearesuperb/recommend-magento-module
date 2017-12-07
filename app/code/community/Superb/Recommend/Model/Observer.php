@@ -583,15 +583,47 @@ class Superb_Recommend_Model_Observer
 
         if ($orderQueue instanceof Mage_Core_Model_Abstract && !is_null($order->getStatus())) {
             $orderQueue->setData([
-                'email'     => $order->getCustomerEmail(),
-                'order_id'  => $order->getIncrementId(),
-                'cid'       => $order->getCustomerId(),
-                'status'    => $order->getStatus(),
-                'store_id'  => $order->getStoreId()
+                'email'         => $order->getCustomerEmail(),
+                'order_id'      => $order->getIncrementId(),
+                'cid'           => $order->getCustomerId(),
+                'status'        => $order->getStatus(),
+                'store_id'      => $order->getStoreId(),
+                'bid'           => null,
+                'segment'       => null,
+                'customer_name' => $order->getCustomerName(),
+                'grand_total'   => $order->getBaseGrandTotal(),
+                'tax'           => $order->getBaseTaxAmount(),
+                'delivery'      => $order->getBaseShippingAmount(),
+                'currency'      => $order->getBaseCurrencyCode(),
             ]);
+            $_qtyOrdered = 0;
+            $products = [];
+            $_items = $order->getAllVisibleItems();
+            foreach ($_items as $_item) {
+                if ($_item->hasParentItem()) {
+                    continue;
+                }
+                $_qtyOrdered += $_item->getQtyOrdered();
+                $itemData = [];
+                $itemData['name']  = $this->_normalizeName($_item->getName());
+                $itemData['sku']   = $_item->getProduct()->getSku();
+                $itemData['qty']   = $_item->getQtyOrdered();
+                $itemData['val']   = sprintf('%.2f', $_item->getBasePriceInclTax());
+                $products[] = $itemData;
+            }
+            $orderQueue->addData([
+                'products' => json_encode($products),
+                'sale_qty' => $_qtyOrdered
+            ]);
+
             $orderQueue->save();
         }
 
         return $this;
+    }
+
+    protected function _normalizeName($name)
+    {
+        return trim(preg_replace('/\s+/', ' ', $name));
     }
 }
