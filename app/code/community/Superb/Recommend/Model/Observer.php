@@ -18,6 +18,7 @@
 class Superb_Recommend_Model_Observer
 {
     CONST LIMIT_STEP = 1000;
+    CONST ORDER_LIFE = 604800;
 
     /**
      * Track after customer register
@@ -465,24 +466,31 @@ class Superb_Recommend_Model_Observer
 
     public function updateOrdersData(Mage_Cron_Model_Schedule $schedule)
     {
-        $orderData = [];
-
         try {
             $apiHelper = Mage::helper('superbrecommend/api');
             $ordersQueueCollection = Mage::getModel('superbrecommend/ordersQueue')->getCollection()->setOrder('id', 'ASC');
             foreach ($ordersQueueCollection->getItems() as $order) {
                 $orderData = [];
-                $orderData['cid']       = $order->getData('cid');
-                $orderData['email']     = $order->getData('email');
-                $orderData['order_id']  = $order->getData('order_id');
-                $orderData['status']    = $order->getData('status');
-                $orderData['store_id']  = $order->getData('store_id');
-                $orderData['segment']   = $order->getData('segment');
+                $orderData['cid']           = $order->getData('cid');
+                $orderData['bid']           = $order->getData('bid');
+                $orderData['email']         = $order->getData('email');
+                $orderData['customer_name'] = $order->getData('customer_name');
+                $orderData['order_id']      = $order->getData('order_id');
+                $orderData['status']        = $order->getData('status');
+                $orderData['store_id']      = $order->getData('store_id');
+                $orderData['grand_total']   = $order->getData('grand_total');
+                $orderData['tax']           = $order->getData('tax');
+                $orderData['delivery']      = $order->getData('delivery');
+                $orderData['currency']      = $order->getData('currency');
+                $orderData['products']      = $order->getData('products');
+                $orderData['sale_qty']      = $order->getData('sale_qty');
                 $response = $apiHelper->uploadOrderData($orderData);
-                if (isset($response['success']) && $response['success']==true) {
-                    $order->delete();
-                } else {
-                    Mage::log('Unable to send order ('.$order->getData('order_id').') via API.',null,'recommend-upload-order-data.log');
+                if ((isset($response['success']) && $response['success']==false || !isset($response['success']))) {
+                    if ($order->getData('created_at')+self::ORDER_LIFE < time()) {
+                        $order->delete();
+                    } else {
+                        Mage::log('Unable to send order ('.$order->getData('order_id').') via API.',null,'recommend-upload-order-data.log');
+                    }
                 }
             }
         } catch (Exception $e) {
@@ -595,6 +603,7 @@ class Superb_Recommend_Model_Observer
                 'tax'           => $order->getBaseTaxAmount(),
                 'delivery'      => $order->getBaseShippingAmount(),
                 'currency'      => $order->getBaseCurrencyCode(),
+                'created_at'    => time()
             ]);
             $_qtyOrdered = 0;
             $products = [];
