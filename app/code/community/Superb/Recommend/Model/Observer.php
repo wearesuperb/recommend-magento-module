@@ -485,12 +485,14 @@ class Superb_Recommend_Model_Observer
                 $orderData['products']      = $order->getData('products');
                 $orderData['sale_qty']      = $order->getData('sale_qty');
                 $response = $apiHelper->uploadOrderData($orderData);
-                if ((isset($response['success']) && $response['success']==false || !isset($response['success']))) {
+                if (isset($response['success']) && $response['success']==false || !isset($response['success'])) {
                     if ($order->getData('created_at')+self::ORDER_LIFE < time()) {
                         $order->delete();
                     } else {
                         Mage::log('Unable to send order ('.$order->getData('order_id').') via API.',null,'recommend-upload-order-data.log');
                     }
+                } else {
+                    $order->delete();
                 }
             }
         } catch (Exception $e) {
