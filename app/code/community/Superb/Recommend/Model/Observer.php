@@ -484,6 +484,8 @@ class Superb_Recommend_Model_Observer
                 $orderData['currency']      = $order->getData('currency');
                 $orderData['products']      = $order->getData('products');
                 $orderData['sale_qty']      = $order->getData('sale_qty');
+                $orderData['created_at']    = $order->getData('created_at');
+
                 $response = $apiHelper->uploadOrderData($orderData);
                 if (isset($response['success']) && $response['success']==false || !isset($response['success'])) {
                     if ($order->getData('created_at')+self::ORDER_LIFE < time()) {
