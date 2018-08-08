@@ -607,7 +607,7 @@ class Superb_Recommend_Model_Observer
                 'tax'           => $order->getBaseTaxAmount(),
                 'delivery'      => $order->getBaseShippingAmount(),
                 'currency'      => $order->getBaseCurrencyCode(),
-                'created_at'    => time()
+                'created_at'    => Varien_Date::toTimestamp($order->getCreatedAt())
             ]);
             $_qtyOrdered = 0;
             $products = [];
