@@ -485,10 +485,14 @@ class Superb_Recommend_Model_Observer
                 $orderData['products']      = $order->getData('products');
                 $orderData['sale_qty']      = $order->getData('sale_qty');
                 $orderData['created_at']    = $order->getData('created_at');
+                if ($order->getData('updated_at')) {
+                    $orderData['updated_at']    = $order->getData('updated_at');
+                }
 
                 $response = $apiHelper->uploadOrderData($orderData);
                 if (isset($response['success']) && $response['success']==false || !isset($response['success'])) {
-                    if ($order->getData('created_at')+self::ORDER_LIFE < time()) {
+                    $fromTime = $order->getData('updated_at') ? $order->getData('updated_at') : $order->getData('created_at');
+                    if ($fromTime +self::ORDER_LIFE < time()) {
                         $order->delete();
                     } else {
                         Mage::log('Unable to send order ('.$order->getData('order_id').') via API.',null,'recommend-upload-order-data.log');
@@ -607,7 +611,8 @@ class Superb_Recommend_Model_Observer
                 'tax'           => $order->getBaseTaxAmount(),
                 'delivery'      => $order->getBaseShippingAmount(),
                 'currency'      => $order->getBaseCurrencyCode(),
-                'created_at'    => Varien_Date::toTimestamp($order->getCreatedAt())
+                'created_at'    => Varien_Date::toTimestamp($order->getCreatedAt()),
+                'updated_at'    => Varien_Date::toTimestamp($order->getUpdatedAt())
             ]);
             $_qtyOrdered = 0;
             $products = [];
