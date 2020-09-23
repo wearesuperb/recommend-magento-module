@@ -18,21 +18,22 @@
 <?php $helper = Mage::helper('superbrecommend'); ?>
 <script type="text/javascript">
 //<![CDATA[
-    (function(){
-    var tracker = document.createElement('script'); tracker.type = 'text/javascript'; tracker.async = true;tracker.src = <?php echo json_encode($helper->getApiJsUrl());?>;
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(tracker, s);
-    })();
-    var _taq = _taq || [];
-    _taq.push(["setAccountId", <?php echo json_encode($helper->getAccountId());?>] ,["setTrackerUrl",<?php echo json_encode($helper->getApiUrl());?>], ["setCurrentCurrencyCode",<?php echo json_encode(Mage::app()->getStore()->getCurrentCurrencyCode());?>], ["setCurrentStoreCode",<?php echo json_encode(Mage::app()->getStore()->getCode());?>]);
+    (function(queue){
+        window[queue] = window[queue] || []; window.RecommendApp = {'queue':window[queue]};
+        var tracker = document.createElement('script'); tracker.type = 'text/javascript'; tracker.async = true;tracker.src = <?php echo json_encode($helper->getApiJsUrl());?>;
+        tracker.onload = function(){window[queue] = window.RecommendApp.queue};
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(tracker, s);
+    })('__rtaq');
+    __rtaq.push(["setAccountId", <?php echo json_encode($helper->getAccountId());?>] ,["setTrackerUrl",<?php echo json_encode($helper->getApiUrl());?>], ["setCurrentCurrencyCode",<?php echo json_encode(Mage::app()->getStore()->getCurrentCurrencyCode());?>], ["setCurrentStoreCode",<?php echo json_encode(Mage::app()->getStore()->getCode());?>]);
     <?php $data = $this->getTrackingData();?>
     <?php if (is_array($data)):?><?php foreach ($data as $record): if (is_array($record) && count($record)):?>
-    _taq.push(<?php echo json_encode($record);?>);
+    __rtaq.push(<?php echo json_encode($record);?>);
     <?php endif; endforeach; endif; ?>
 //]]>
 </script>
 <?php echo $this->getChildHtml('recommend_tracker'); echo $this->getChildHtml('recommend_tracker_cart'); ?>
 <script type="text/javascript">
 //<![CDATA[
-    _taq.push(["trackPageview"]);
+    __rtaq.push(["trackPageview"]);
 //]]>
 </script>

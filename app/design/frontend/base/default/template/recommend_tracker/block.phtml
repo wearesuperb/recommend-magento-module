@@ -20,7 +20,7 @@
 //<![CDATA[
 <?php $data = $this->getTrackingData();?>
 <?php if (is_array($data)):?><?php foreach ($data as $record): if (is_array($record) && count($record)):?>
-_taq.push(<?php echo json_encode($record);?>);
+__rtaq.push(<?php echo json_encode($record);?>);
 <?php endif; endforeach; endif; ?>
 //]]>
 </script>
